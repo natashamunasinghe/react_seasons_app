@@ -7,7 +7,7 @@ class App extends React.Component {
         super(props);
 
         //this mean at the beg. we dont know number value of latitude
-        this.state = { lat: null };
+        this.state = { lat: null, errorMessage: "" };
 
         window.navigator.geolocation.getCurrentPosition(
             //success callback
@@ -17,12 +17,22 @@ class App extends React.Component {
             },
     
             //failure callback
-            err => console.log(err)
-      );
+            err => {
+                this.setState({ errorMessage: err.message  });
+            }
+        );
     }
 
     render () {
-        return <div>Latitude:{this.state.lat} </div>;
+        if (this.state.errorMessage && !this.state.lat) {
+            return <div>Error: {this.state.errorMessage}</div>;
+        }
+        
+        if (!this.state.errorMessage && this.state.lat) {
+            return <div>Latitude: {this.state.lat}</div>;
+        }
+ 
+        return<div>Loading!</div>;
 
     }
 }
